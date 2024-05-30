@@ -35,6 +35,12 @@ ALGORITHM = "HS256"
 
 
 
+@app.get("/")
+async def ping():
+    return {
+        "message": "API IS WORKING !!"
+    }
+
 @app.post("/signup", response_model=schemas.SignupResponse)
 async def signup(request: schemas.SignupDetails):
     user = await User.get_or_none(email=request.email)
@@ -168,5 +174,13 @@ register_tortoise(
     generate_schemas=True,
     add_exception_handlers=True,
 )
+print("Database URL:", os.getenv("URL_DATABASE"))
+
+# Ensure the app runs correctly
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
 
 
