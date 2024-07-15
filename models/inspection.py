@@ -5,25 +5,7 @@ from tortoise import fields
 class InspectionReport(Model):
     __tablename__ = 'inspection'
     vehicle = fields.ForeignKeyField('models.VehicleInfo', related_name='inspections')
-    report_id = fields.CharField(max_length=8, unique=True)
-    
-    @classmethod
-    async def get_last_report_number(cls):
-        last_report = await cls.all().order_by("-id").first()
-        if last_report:
-            last_number = int(last_report.report_id[3:])  # Extract the number part
-            return last_number
-        return 0  # If no previous report exists, start from 0
-
-    async def generate_report_id(self):
-        last_number = await self.get_last_report_number()
-        new_number = last_number + 1
-        return f"REP{new_number:03d}"
-
-    async def save(self, *args, **kwargs):
-        if not self.report_id:
-            self.report_id = await self.generate_report_id()
-        await super().save(*args, **kwargs)
+    id = fields.IntField(max_length=6, unique=True, pk=True)
     
     actions = fields.CharField(max_length=100)
     date = fields.DateField(null=False, input_formats=["%m/%d/%y"])

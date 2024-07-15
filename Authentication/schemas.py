@@ -1,7 +1,7 @@
 import datetime
 from pydantic import BaseModel, EmailStr, validator
 
-class logindetails(BaseModel):
+class logindetails(BaseModel): 
     email:str
     password:str
         

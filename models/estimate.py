@@ -14,17 +14,7 @@ class EstimateItem(Model):
 
 class EstimateReport(Model):
     __tablename__ = 'estimate'
-    report_id = fields.CharField(max_length=7, unique=True)
-    
-    async def save(self, *args, **kwargs):
-        if not self.report_id:
-            last_report = await EstimateReport.all().order_by('-id').first()
-            if last_report:
-                last_id = int(last_report.report_id[3:])  # Extract the numeric part
-                self.report_id = f"EST{last_id + 1:03d}"
-            else:
-                self.report_id = "EST001" 
-        await super().save(*args, **kwargs)
+    id = fields.IntField(max_length=6, unique=True, pk=True)
     
     # ForeignKeyField to VehicleInfo model
     vehicle = fields.ForeignKeyField('models.VehicleInfo', related_name='estimate_reports', null=False)

@@ -8,7 +8,7 @@ class Invoice(Model):
         ('paid', 'Paid'),
         ('pending', 'Pending'),
     ]
-    invoice_id = fields.CharField(max_length=10, unique=True)
+    id = fields.IntField(max_length=6, unique=True, pk=True)
 
     service = fields.ForeignKeyField('models.ServiceLog', related_name='invoices')
 
@@ -16,16 +16,6 @@ class Invoice(Model):
     total_amount_paid = fields.DecimalField(max_digits=10, decimal_places=2)
     service_description = fields.CharField(max_length=200, help_text="Additional service details or notes")
     service_amount = fields.DecimalField(max_digits=10, decimal_places=2, help_text="Enter amount charged for the service")
-    
-    async def save(self, *args, **kwargs):
-        if not self.invoice_id:
-            last_invoice = await Invoice.all().order_by('-id').first()
-            if last_invoice:
-                last_id = int(last_invoice.invoice_id[3:])  # Extract the numeric part
-                self.invoice_id = f"INV{last_id + 1:03d}"
-            else:
-                self.invoice_id = "INV001"
-        await super().save(*args, **kwargs)
     
     async def populate_customer_details(self):
         if self.customer:
